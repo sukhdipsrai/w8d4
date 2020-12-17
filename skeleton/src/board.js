@@ -9,6 +9,21 @@ if (typeof window === 'undefined'){
  * and two white pieces at [3, 3] and [4, 4]
  */
 function _makeGrid () {
+  // const grid = [[], [], [], [], [], [], [], []];
+  let grid = new Array(8);
+
+  for (let i = 0; i < 8; i++) {
+    grid[i] = new Array(8);
+  }
+
+  // grid.forEach(el => el = new Array(8)); why did this not work
+
+  grid[3][4] = new Piece('black');
+  grid[4][3] = new Piece('black');
+  grid[3][3] = new Piece('white');
+  grid[4][4] = new Piece('white');
+
+  return grid;
 }
 
 /**
@@ -28,6 +43,18 @@ Board.DIRS = [
  * Checks if a given position is on the Board.
  */
 Board.prototype.isValidPos = function (pos) {
+  const x = pos[0];
+  const y = pos[1];
+
+  if (x < 0 || y > 7) {
+    return false;
+  }
+  if (x > 7 || y < 0) {
+    return false;
+  }
+
+  return true;
+
 };
 
 /**
@@ -35,6 +62,11 @@ Board.prototype.isValidPos = function (pos) {
  * throwing an Error if the position is invalid.
  */
 Board.prototype.getPiece = function (pos) {
+  if (this.isValidPos(pos)) {
+    return this.grid[pos[0]][pos[1]];
+  } else {
+    throw new Error('Not valid pos!');
+  }
 };
 
 /**
@@ -42,12 +74,21 @@ Board.prototype.getPiece = function (pos) {
  * matches a given color.
  */
 Board.prototype.isMine = function (pos, color) {
+  if (this.getPiece(pos) === undefined) {
+    return false
+  }
+  return (this.getPiece(pos).color === color)
+  // ask about this part, why isnt undefined false. why didnt just line 80 alone work
 };
 
 /**
  * Checks if a given position has a piece on it.
  */
 Board.prototype.isOccupied = function (pos) {
+  if (this.getPiece(pos) === undefined) {
+    return false;
+  }
+  return true;
 };
 
 /**
@@ -64,6 +105,24 @@ Board.prototype.isOccupied = function (pos) {
  * Returns empty array if no pieces of the opposite color are found.
  */
 Board.prototype._positionsToFlip = function(pos, color, dir, piecesToFlip){
+  let next_pos = [(pos[0] + dir[0]), (pos[1]+ dir[1])];
+  let pieces = [];
+  if (piecesToFlip !== undefined) {
+    pieces = piecesToFlip;
+  }
+
+  // try {
+  if (!this.isValidPos(next_pos) || !this.isOccupied(next_pos) || !this.isMine(next_pos, color) || !this.isValidPos(pos)) {
+    return pieces;
+  }
+  // } catch {
+  //   return pieces;
+  // }
+  
+  pieces.push(next_pos);
+  this._positionsToFlip(next_pos, color, dir, pieces);
+  
+  return pieces;
 };
 
 /**
