@@ -15,6 +15,7 @@
  }
 
  .profile-info{
+     
     border-bottom: 1px solid grey;
     padding-bottom: 15px;
  }
@@ -51,3 +52,16 @@
     top: 2.5px;
 }
 
+.friend-picture{
+    height: 50px;
+    width: 50px;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+.friend-nav li{
+    float: left;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 5px 5px 5px 5px;
+}
