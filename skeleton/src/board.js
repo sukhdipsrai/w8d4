@@ -155,6 +155,15 @@ Board.prototype.validMove = function (pos, color) {
  * Throws an error if the position represents an invalid move.
  */
 Board.prototype.placePiece = function (pos, color) {
+  if (this.validMove(pos, color)) {
+    this.grid[pos[0]][pos[1]] = new Piece(color)
+    const dirs = [[0, 1], [0, -1], [1, 0], [-1, 0], [1, 1], [-1, -1]];
+    let ans = []
+    dirs.forEach(dir => ans = ans.concat(this._positionsToFlip(pos, color, dir)));
+    ans.forEach(el => this.grid[el[0]][el[1]].flip())
+  } else {
+    throw new Error("Invalid move!")
+  }
 };
 
 /**
@@ -162,6 +171,18 @@ Board.prototype.placePiece = function (pos, color) {
  * the Board for a given color.
  */
 Board.prototype.validMoves = function (color) {
+  // const dirs = [[0, 1], [0, -1], [1, 0], [-1, 0], [1, 1], [-1, -1]];
+  let ans = [];
+  
+  for (let i = 0; i < 8; i++) {
+    for (let j = 0; j < 8; j++) {
+      if (this.validMove([i, j], color)) {
+        ans.concat([i,j])
+      }
+    }
+  }
+  
+  return ans;
 };
 
 /**
